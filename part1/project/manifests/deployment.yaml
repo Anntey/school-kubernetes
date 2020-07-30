@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-dep
+spec:
+  selector:
+    matchLabels:
+      app: project
+  template:
+    metadata:
+      labels:
+        app: project
+    spec:
+      volumes:
+        - name: project-volume
+          persistentVolumeClaim:
+            claimName: project-claim
+      initContainers:
+        - name: volume-mount-hack
+          image: alpine
+          command: ["sh", "-c", "chown -R 1000:1000 /app/build/public"]
+          volumeMounts:
+            - name: project-volume
+              mountPath: /app/build/public
+      containers:
+        - name: project-app
+          image: anntey/project:latest
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: project-volume
+              mountPath: /app/build/public

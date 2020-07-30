@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pingpong
+spec:
+  selector:
+    matchLabels:
+      app: pingpong
+  template:
+    metadata:
+      labels:
+        app: pingpong
+    spec:
+      volumes:
+        - name: shared-hash-pingpongs
+          persistentVolumeClaim:
+            claimName: hashfile-claim
+      containers:
+        - name: pingpong
+          image: anntey/pingpong:latest
+          volumeMounts:
+            - name: shared-hash-pingpongs
+              mountPath: /srv/
+          env:
+            - name: PINGPONGFILE_PATH
+              value: "/srv/pingpong.txt"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

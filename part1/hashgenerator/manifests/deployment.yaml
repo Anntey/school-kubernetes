@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hashgenerator
+  name: hashgenerator-dep
 spec:
   replicas: 1
   selector:
@@ -12,10 +12,41 @@ spec:
       labels:
         app: hashgenerator
     spec:
+      volumes:
+        - name: shared-hash-pingpongs
+          persistentVolumeClaim:
+            claimName: hashfile-claim
+      initContainers:
+        - name: volume-mount-hack
+          image: alpine
+          command: ["sh", "-c", "chown -R 1000:1000 /srv"]
+          volumeMounts:
+            - name: shared-hash-pingpongs
+              mountPath: /srv/
       containers:
-      - name: hashgenerator
-        image: anntey/hashgenerator:latest
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+        - name: hashgenerator-server
+          image: anntey/hashgenerator-server:latest
+          env:
+            - name: HASHFILE_PATH
+              value: "/srv/hash.txt"
+            - name: PINGPONGFILE_PATH
+              value: "/srv/pingpong.txt"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: shared-hash-pingpongs
+              mountPath: /srv/
+        - name: hashgenerator
+          image: anntey/hashgenerator-generator:latest
+          env:
+            - name: HASHFILE_PATH
+              value: "/srv/hash.txt"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          volumeMounts:
+            - name: shared-hash-pingpongs
+              mountPath: /srv/
