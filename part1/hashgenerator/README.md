@@ -2,7 +2,7 @@
 
 Docker hub: [anntey/hashgenerator](https://hub.docker.com/repository/docker/anntey/hashgenerator)
 
-## Create vluster with k3d
+## Create cluster with k3d
 
 ```zsh
 k3d cluster create --port '8082:30080@agent[0]' -p 8081:80@loadbalancer --agents 2
