@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hashgenerator-first
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hashgenerator
+  template:
+    metadata:
+      labels:
+        app: hashgenerator
+    spec:
+      containers:
+      - name: hashgenerator
+        image: anntey/hashgenerator:latest
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"

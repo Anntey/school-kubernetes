@@ -1,8 +1,8 @@
 ## Container Image
 
-Docker hub: [anntey/hashgenerator](https://hub.docker.com/repository/docker/anntey/hashgenerator).
+Docker hub: [anntey/hashgenerator](https://hub.docker.com/repository/docker/anntey/hashgenerator)
 
-## Delpoy with kubectl
+## Deploy with kubectl
 
 ```zsh
 $ kubectl create deployment hashgenerator-first --image=anntey/hashgenerator
@@ -23,5 +23,13 @@ $ kubectl logs -f hashgenerator-first-5c6fb9c9d5-jjvvm
 ```
 
 ```
-$ kubectl delete deployments.apps hashgenerator-first 
+$ kubectl delete deployment hashgenerator-first 
+```
+
+## Deploy with manifest
+
+```zsh
+$ kubectl apply -f manifests/deployment.yaml
+$ kubectl logs -f hashgenerator-first-f6d6bc975-qgt6c
+$ kubectl delete -f manifests/deployment.yaml
 ```
