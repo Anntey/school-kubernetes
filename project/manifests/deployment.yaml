@@ -26,6 +26,9 @@ spec:
       containers:
         - name: project-backend
           image: anntey/project-backend:latest
+          envFrom:
+            - secretRef:
+                name: postgres-pw-url
           resources:
             limits:
               memory: "512Mi"
@@ -39,3 +42,15 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
+        # - name: psql-client
+        #   # Just random alpine Image I found that has the psql-client installed
+        #   # Keep it idling to debug the db connection
+        #   image: jbergknoff/postgresql-client
+        #   command: ["tail", "-f", "/dev/null"]
+        #   envFrom:
+        #     - secretRef:
+        #         name: postgres-pw-url
+        #   resources:
+        #     limits:
+        #       memory: "512Mi"
+        #       cpu: "500m"
