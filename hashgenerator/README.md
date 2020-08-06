@@ -1,5 +1,4 @@
 ## Create cluster with k3d
-
 ```zsh
 k3d cluster create --port '8082:30080@agent[0]' -p 8081:80@loadbalancer --agents 2
 ```
@@ -7,7 +6,6 @@ k3d cluster create --port '8082:30080@agent[0]' -p 8081:80@loadbalancer --agents
 Access server node through port 8081.
 
 ## Deploy with kubectl
-
 ```zsh
 $ kubectl create deployment hashgenerator --image=anntey/hashgenerator
 $ kubectl logs -f hashgenerator-5c6fb9c9d5-jjvvm
@@ -27,7 +25,6 @@ $ kubectl delete deployment hashgenerator-first
 ```
 
 ## Deploy with manifests
-
 ```zsh
 $ kubectl apply -f manifests/deployment.yaml
 $ kubectl apply -f manifests/service.yaml
@@ -43,4 +40,14 @@ $ kubectl logs -f hashgenerator-server-f6d6bc975-qgt6c
 $ kubectl delete -f manifests/deployment.yaml
 $ kubectl delete -f manifests/service.yaml
 $ kubectl delete -f manifests/ingress.yaml
+```
+
+## ConfigMaps
+```zsh
+kubectl config set-context --current --namespace=hashgenerator
+```
+
+Create ConfigMap from `hashgenerator-env-file.properties`
+```zsh
+kubectl create configmap hashgenerator-config-env-file --from-env-file hashgenerator/manifests/hashgenerator-envfile.properties
 ```
