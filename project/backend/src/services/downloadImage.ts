@@ -1,6 +1,5 @@
 import fs from 'fs';
-//import fsPromises from 'fs/promises';
-const fsPromises = require('fs').promises;
+import fsPromises from 'fs/promises';
 import axios from 'axios';
 
 import { parseDownloadedImage } from '../typeguards';

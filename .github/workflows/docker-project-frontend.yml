@@ -1,11 +1,11 @@
-name: "build anntey/project:latest"
+name: "build project-frontend:latest"
 
 on:
   push:
     tags:
       - v*
     paths:
-      - "project/*"
+      - "project/frontend/*"
 
 jobs:
   build:
@@ -18,8 +18,8 @@ jobs:
         with:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-          repository: anntey/project
-          path: ./project
+          repository: anntey/project-frontend
+          path: ./project/frontend
           tags: latest
           tag_with_ref: true
           tag_with_sha: true
