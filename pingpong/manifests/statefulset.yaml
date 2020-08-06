@@ -13,8 +13,6 @@ spec:
       protocol: TCP
       targetPort: 5432
 ---
-# A ConfigMap that creates the schema for the 'pingpongers' table
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
