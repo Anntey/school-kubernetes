@@ -1,4 +1,3 @@
-## Container Image
 ## Create cluster with k3d
 
 ```zsh
