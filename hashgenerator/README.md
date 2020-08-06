@@ -26,7 +26,7 @@ $ kubectl logs -f hashgenerator-5c6fb9c9d5-jjvvm
 $ kubectl delete deployment hashgenerator-first 
 ```
 
-## Deploy with deployment manifest
+## Deploy with manifests
 
 ```zsh
 $ kubectl apply -f manifests/deployment.yaml
