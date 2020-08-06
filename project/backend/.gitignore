@@ -19,7 +19,7 @@ build/*
 
 # Coverage reports
 coverage
-
+build/
 # API keys and secrets
 .env
 
