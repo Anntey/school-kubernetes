@@ -46,3 +46,15 @@ deployment.apps/hashgenerator-dep   1/1     1            1           53s
 NAME                                           DESIRED   CURRENT   READY   AGE
 replicaset.apps/hashgenerator-dep-66c9cc599d   1         1         1       53s
 ```
+
+## Helm: prometheus-operator
+```zsh
+$ kubectl create namespace prometheus
+$ helm install stable/prometheus-operator --generate-name --namespace prometheus
+```
+```zsh
+$ kubectl -n prometheus port-forward prometheus-operator-1596721129-grafana-78b9cb4bc9-fktr2 3000 
+
+Forwarding from 127.0.0.1:3000 -> 3000
+Forwarding from [::1]:3000 -> 3000
+```

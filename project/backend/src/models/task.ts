@@ -1,6 +1,7 @@
 import { Model, DataTypes, BuildOptions, Sequelize } from 'sequelize';
 import { Task } from '../types';
 
+// Create an static intersection type
 type TaskModelStatic = typeof Model & {
   new (values?: Record<string, unknown>, options?: BuildOptions): Task;
 };
@@ -19,7 +20,7 @@ export const taskFactory = (sequelize: Sequelize): TaskModelStatic => {
         type: DataTypes.UUID,
         allowNull: true,
       },
-      task: DataTypes.STRING,
+      task: DataTypes.STRING(140),
       done: DataTypes.BOOLEAN,
     },
     {
