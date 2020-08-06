@@ -29,8 +29,10 @@ spec:
           env:
             - name: HASHFILE_PATH
               value: "/srv/hash.txt"
-            - name: PINGPONGFILE_PATH
-              value: "/srv/pingpong.txt"
+            #- name: PINGPONGFILE_PATH
+            #  value: "/srv/pingpong.txt"
+            - name: PINGPONG_URL
+              value: "http://pingpong-svc:6789/pingpong"
           resources:
             limits:
               memory: "512Mi"

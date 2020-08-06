@@ -1,0 +1,24 @@
+name: "build anntey/hashgenerator-generator"
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "hashgenerator/*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@v2
+      - name: Build and push docker
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          repository: anntey/hashgenerator-generator
+          path: ./hashgenerator
+          dockerfile: ./hashgenerator/Dockerfile.generator
+          tags: latest
+          tag_with_sha: true
