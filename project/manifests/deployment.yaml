@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: project-dep
+  namespace: project
 spec:
   selector:
     matchLabels:
@@ -18,7 +19,7 @@ spec:
       initContainers:
         - name: volume-mount-hack
           image: alpine
-          command: ["sh", "-c", "chown -R 1000:1000 /app/build/public"]
+          command: ["sh", "-c", "chown -R 1000:1000 /app/build/public"] 
           volumeMounts:
             - name: project-volume
               mountPath: /app/build/public
