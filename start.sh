@@ -1,21 +1,5 @@
-cd hashgenerator
-echo $(pwd)
-kubectl apply -f manifests/deployment.yaml
-kubectl apply -f manifests/service.yaml
-kubectl apply -f manifests/ingress.yaml
+kubectl apply -f hashgenerator/manifests/
 
-cd ..
-cd pingpong
-echo $(pwd)
-kubectl apply -f manifests/deployment.yaml
-kubectl apply -f manifests/service.yaml
-kubectl apply -f manifests/ingress.yaml
+kubectl apply -f pingpong/manifests/
 
-cd ..
-cd project
-echo $(pwd)
-kubectl apply -f manifests/deployment.yaml
-kubectl apply -f manifests/service.yaml
-kubectl apply -f manifests/ingress.yaml
-
-cd ..
+kubectl apply -f project/manifests/

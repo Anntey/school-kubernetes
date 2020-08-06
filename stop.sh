@@ -1,21 +1,5 @@
-cd hashgenerator
-echo $(pwd)
-kubectl delete -f manifests/deployment.yaml
-kubectl delete -f manifests/service.yaml
-kubectl delete -f manifests/ingress.yaml
+kubectl delete -f hashgenerator/manifests/
 
-cd ..
-cd pingpong
-echo $(pwd)
-kubectl delete -f manifests/deployment.yaml
-kubectl delete -f manifests/service.yaml
-kubectl delete -f manifests/ingress.yaml
+kubectl delete -f pingpong/manifests/
 
-cd ..
-cd project
-echo $(pwd)
-kubectl delete -f manifests/deployment.yaml
-kubectl delete -f manifests/service.yaml
-kubectl delete -f manifests/ingress.yaml
-
-cd ..
+kubectl delete -f project/manifests/
