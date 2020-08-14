@@ -114,3 +114,20 @@ $ kubectl logs hashgenerator-dep-846456bdb-jw797 --all-containers
 ```zsh
 $ gcloud container clusters delete dwk-cluster
 ```
+
+## CI/CD
+
+```zsh
+$ kubectl create namespace project
+$ kubectl config set-context --current --namespace=project
+$ helm repo add traefik https://containous.github.io/traefik-helm-chart && \
+  helm repo update && \
+  helm install traefik traefik/traefik
+```
+
+```zsh
+$ kubectl get svc
+
+NAME      TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
+traefik   LoadBalancer   10.51.247.87   35.234.119.98   80:31601/TCP,443:30377/TCP   5m43s
+```

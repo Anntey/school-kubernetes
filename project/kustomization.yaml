@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - manifests-gke/ingress.yaml
+  - manifests-gke/persistentvolumeclaim.yaml
+  - manifests-gke/secret.yaml
+  - manifests-gke/statefulset.yaml
+  - manifests-gke/service.yaml
+  - manifests-gke/deployment.yaml
+images:
+  - name: PROJECT_BACKEND_IMAGE
+    newName: anntey/project-backend:latest
+  - name: PROJECT_FRONTEND_IMAGE
+    newName: anntey/project-frontend:latest
