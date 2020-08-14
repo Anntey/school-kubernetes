@@ -1,4 +1,4 @@
-DevOps with Kubernetes
+[DevOps with Kubernetes](https://devopswithkubernetes.com/)
 
 ## Create namespaces
 
@@ -64,3 +64,53 @@ kubectl create namespace loki-stack
 helm upgrade --install loki --namespace=loki-stack loki/loki-stack
 ```
 Loki at http://loki.loki-stack:3100
+
+## GCP: GKE
+```zsh
+$ gcloud container clusters create dwk-cluster --zone=europe-north1-b
+
+NAME         LOCATION         MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION   NUM_NODES  STATUS
+dwk-cluster  europe-north1-b  1.15.12-gke.2   35.228.249.45  n1-standard-1  1.15.12-gke.2  3          RUNNING
+```
+
+```zsh
+$ gcloud container clusters get-credentials dwk-cluster --zone=europe-north1-b
+$ kubectl cluster-info
+
+Kubernetes master is running at https://35.228.249.45
+GLBCDefaultBackend is running at https://35.228.249.45/api/v1/namespaces/kube-system/services/default-http-backend:http/proxy
+Heapster is running at https://35.228.249.45/api/v1/namespaces/kube-system/services/heapster/proxy
+KubeDNS is running at https://35.228.249.45/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+Metrics-server is running at https://35.228.249.45/api/v1/namespaces/kube-system/services/https:metrics-server:/proxy
+```
+
+```zsh
+$ kubectl create namespace pingpong
+$ kubectl apply -f pingpong/manifests-gke/
+$ kubens pingpong
+$ kubectl get svc
+
+NAME                        TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)        AGE
+pingpong-svc                ClusterIP      10.31.246.77    <none>           6789/TCP       4m16s
+pingpong-svc-loadbalancer   LoadBalancer   10.31.242.4     35.228.247.177   80:31411/TCP   4m16s
+postgres-pingpong-svc       ClusterIP      10.31.248.169   <none>           5432/TCP       4m16s
+```
+
+```zsh
+$ kubectl create namespace hashgenerator
+$ kubens hashgenerator
+$ kubectl apply -f hashgenerator/manifests-gke/
+$ kubectl get svc
+
+NAME                             TYPE           CLUSTER-IP      EXTERNAL-IP     PORT(S)        AGE
+hashgenerator-svc                ClusterIP      10.31.250.225   <none>          2345/TCP       68s
+hashgenerator-svc-loadbalancer   LoadBalancer   10.31.245.96    35.228.146.72   80:31365/TCP   68s
+```
+
+```zsh
+$ kubectl logs hashgenerator-dep-846456bdb-jw797 --all-containers
+```
+
+```zsh
+$ gcloud container clusters delete dwk-cluster
+```
