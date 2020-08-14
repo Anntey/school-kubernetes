@@ -2,6 +2,7 @@ name: "build project-backend:latest"
 
 on:
   push:
+    branches: [master]
     paths:
       - "project/backend/*"
 
