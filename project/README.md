@@ -1,4 +1,4 @@
-## Deploy with manifests
+## Deploy with manifests 
 
 ```zsh
 $ kubectl apply -f manifests/
