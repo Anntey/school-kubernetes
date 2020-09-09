@@ -4,6 +4,7 @@ metadata:
   name: pingpong-dep
   namespace: pingpong
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: pingpong
@@ -16,24 +17,20 @@ spec:
         - name: pingpong
           image: anntey/pingpong:latest
           env:
-            - name: ENABLE_DB
-              value: "true"
             - name: POSTGRES_HOST
               value: "postgres-pingpong-svc"
           envFrom:
             - secretRef:
-                name: postgres-pw-url
-          resources:
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-        - name: psql-client
-          image: jbergknoff/postgresql-client
-          command: ["tail", "-f", "/dev/null"]
-          envFrom:
-            - secretRef:
                 name: postgres-pw
+          readinessProbe:
+            initialDelaySeconds: 0
+            timeoutSeconds: 3
+            periodSeconds: 5
+            successThreshold: 1
+            httpGet:
+              path: /healthz
+              port: 3000
           resources:
             limits:
               memory: "512Mi"
-              cpu: "500m"
+              cpu: "125m"

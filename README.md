@@ -111,10 +111,6 @@ hashgenerator-svc-loadbalancer   LoadBalancer   10.31.245.96    35.228.146.72   
 $ kubectl logs hashgenerator-dep-846456bdb-jw797 --all-containers
 ```
 
-```zsh
-$ gcloud container clusters delete dwk-cluster
-```
-
 ## CI/CD
 
 ```zsh
@@ -130,4 +126,8 @@ $ kubectl get svc
 
 NAME      TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)                      AGE
 traefik   LoadBalancer   10.51.247.87   35.234.119.98   80:31601/TCP,443:30377/TCP   5m43s
+```
+
+```zsh
+$ gcloud container clusters delete dwk-cluster --zone=europe-north1-b
 ```

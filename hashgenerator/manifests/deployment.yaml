@@ -37,10 +37,18 @@ spec:
                 configMapKeyRef:
                   name: hashgenerator-config-env-file
                   key: MESSAGE
+          readinessProbe:
+            initialDelaySeconds: 0
+            timeoutSeconds: 3
+            periodSeconds: 5
+            successThreshold: 1
+            httpGet:
+              path: /healthz
+              port: 3001
           resources:
             limits:
               memory: "512Mi"
-              cpu: "500m"
+              cpu: "125m"
         - name: hashgenerator
           image: anntey/hashgenerator-generator:latest
           env:
@@ -52,4 +60,4 @@ spec:
           resources:
             limits:
               memory: "512Mi"
-              cpu: "500m"
+              cpu: "125m"

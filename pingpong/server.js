@@ -1,80 +1,90 @@
 require("dotenv").config();
-const express = require("express");
 const fsPromises = require("fs").promises;
+const express = require("express");
+const axios = require("axios");
 
 const app = express();
 
-const { PINGPONGFILE_PATH, ENABLE_DB } = process.env;
-if (PINGPONGFILE_PATH) console.log("PINGPONGFILE_PATH:", PINGPONGFILE_PATH);
-if (!PINGPONGFILE_PATH) console.log("Writing to txt is disabled");
+const { PINGPONG_URL, HASHGENERATOR_URL } = process.env;
+console.log("HASHGENERATOR_URL:", HASHGENERATOR_URL);
+console.log("PINGPONG_URL:", PINGPONG_URL);
 
-const PORT = process.env.PORT || 3000;
-
-const POSTGRES_USER = process.env.POSTGRES_USER || "postgres";
-const POSTGRES_PORT = process.env.POSTGRES_PORT || 5432;
-const POSTGRES_HOST = process.env.POSTGRES_HOST || "localhost";
-const POSTGRES_DB = process.env.POSTGRES_DB || "postgres";
-const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD.trim() || "password";
-console.log(`NEVER log a db password to stdin: '${POSTGRES_PASSWORD}'`);
-
-const Pool = require("pg").Pool;
-const pool = new Pool({
-  host: POSTGRES_HOST,
-  port: POSTGRES_PORT,
-  user: POSTGRES_USER,
-  database: POSTGRES_DB,
-  password: POSTGRES_PASSWORD,
-});
+const PORT = process.env.SERVER_PORT || 3000;
+const MESSAGE = process.env.MESSAGE || "Not from dotenv";
 
 app.set("trust proxy", true);
 
-let counter = 0;
+app.get("/", async (req, res) => {
+  console.log(`${req.ip} requested a hashFile + pingPongFile`);
 
-app.get("/pingpong", async (req, res) => {
-  if (!ENABLE_DB) {
-    // dont update if read-only header is set
-    if (!req.get("read-only")) {
-      counter++;
-      console.log(
-        `pingpong: ${req.ip} has pinged me. i have been ping ${counter} times.`
-      );
-    } else {
-      console.log(`pingpong: ${req.ip} has read my ping count`);
-    }
+  let currentHash;
 
-    // only write to disk if PINGPONGFILE_PATH is truthy
-    if (PINGPONGFILE_PATH) {
-      try {
-        await fsPromises.writeFile(
-          PINGPONGFILE_PATH,
-          `Ping / Pongs: ${counter}`
-        );
-        console.log(`wrote to ${PINGPONGFILE_PATH}`);
-      } catch (error) {
-        console.error(`pingpong error: ${error.message}`);
-      }
-    }
+  if (!HASHGENERATOR_URL) {
+    return res.status(400).send(`error not hash provider given`);
+  }
 
-    return res.status(200).json({ counter });
-  } else {
-    pool.query(
-      "INSERT INTO pingpongers (name) VALUES ($1)",
-      ["mr. ping"],
-      (error, results) => {
-        if (error) {
-          throw error;
-        } else {
-          console.log("added a new ping to db");
+  try {
+    if (HASHGENERATOR_URL) {
+      const fetchHashes = async (url) => {
+        try {
+          const res = await axios.get(url);
+          return res.data.hashTimestamp;
+        } catch (error) {
+          console.error(error);
         }
-      }
-    );
+      };
 
-    pool.query("SELECT * FROM pingpongers", (error, results) => {
-      if (error) {
-        throw error;
-      } else {
-        return res.status(200).json({ counter: results.rowCount });
-      }
+      currentHash = await fetchHashes(HASHGENERATOR_URL);
+    }
+
+    if (PINGPONG_URL) {
+      const fetchPingPongs = async (url) => {
+        try {
+          const res = await axios.get(url, { headers: { "Read-Only": true } });
+          return res.data.counter;
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      const pingPongCounter = await fetchPingPongs(PINGPONG_URL);
+      return res
+        .status(200)
+        .send(`${MESSAGE}<br> ${currentHash}<br> ${pingPongCounter}`);
+    }
+
+    // If nothing
+    return res.status(200).send(currentHash);
+  } catch (error) {
+    res.status(400).send(`error: ${error.message}`);
+    console.error(`error: ${error.message}`);
+  }
+});
+
+app.get("/healthz", async (req, res) => {
+  if (!PINGPONG_URL)
+    return res.status(400).json({ error: "PINGPONG_URL is undefined" });
+  if (!HASHGENERATOR_URL)
+    return res.status(400).json({ error: "HASHGENERATOR_URL is undefined" });
+  const pingPongHealthz = `${new URL(PINGPONG_URL).origin}/healthz`; // http://localhost:3000/healthz
+
+  try {
+    const resAxios = await axios.get(pingPongHealthz);
+    if (resAxios.status === 200) {
+      return res.status(200).json({
+        [pingPongHealthz]: {
+          response: resAxios.data,
+          status: resAxios.status,
+        },
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({
+      [pingPongHealthz]: {
+        response: error.message,
+        status: error.code,
+      },
     });
   }
 });
